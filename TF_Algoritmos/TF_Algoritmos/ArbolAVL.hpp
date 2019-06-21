@@ -17,7 +17,7 @@ private:
 
 	void _insertar(Nodo*& raiz, int valor, Fila* nuevo, size_t ind) {
 		if (raiz == nullptr) {
-			raiz = new Nodo(valor, ind);
+			raiz = new Nodo(valor);
 			return;
 		}
 		else if (raiz->getV() == valor) {
