@@ -10,7 +10,6 @@ class DataFrame {
 private:
 	vector<Fila*>* filas;
 	vector<char>* datos;
-	vector<Arbol*>* arboles;
 	size_t numFilas;
 	char identificarTD(string dato) {
 		int contP = 0;
