@@ -30,6 +30,7 @@ public:
 	DataFrame() {
 		filas = new vector<Fila*>;
 		datos = new vector<char>;
+		
 		numFilas = 0;
 	}
 

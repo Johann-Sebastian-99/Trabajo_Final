@@ -3,11 +3,12 @@
 #include "DataFrame.hpp"
 #include "Nodo_Arbol.hpp"
 
+template<typename T>
 class Arbol {
 private:
-	Nodo* inicio;
+	Nodo<T>* inicio;
 
-	int calcular_altura(Nodo*& raiz) {
+	int calcular_altura(Nodo<T>*& raiz) {
 		int izq = 0, der = 0;
 		if (raiz->getI()) izq = raiz->getI()->getA() + 1;
 		if (raiz->getD()) der = raiz->getD()->getA() + 1;
@@ -15,7 +16,7 @@ private:
 		else return der;
 	}
 
-	void _insertar(Nodo*& raiz, int valor, Fila* nuevo, size_t ind) {
+	void _insertar(Nodo<T>*& raiz, T valor, Fila* nuevo, size_t ind) {
 		if (raiz == nullptr) {
 			raiz = new Nodo(valor);
 			return;
@@ -37,14 +38,14 @@ private:
 		raiz->setA(calcular_altura(raiz));
 	}
 
-	int factor_equilibrio(Nodo* izq, Nodo* der) {
+	int factor_equilibrio(Nodo<T>* izq, Nodo* der) {
 		if (!izq && !der) return 0;
 		if (!izq && der) return der->getA() + 1;
 		if (izq && !der) return (izq->getA() + 1)*(-1);
 		return (der->getA() + 1) - (izq->getA() + 1);
 	}
 
-	void balanceo(Nodo*& raiz) {
+	void balanceo(Nodo<T>*& raiz) {
 		Nodo* izq = raiz->getI();
 		Nodo* der = raiz->getD();
 		if (factor_equilibrio(izq, der) > 1) {
@@ -67,7 +68,7 @@ private:
 		}
 	}
 
-	Nodo*& rotacion_izq(Nodo* raiz) {
+	Nodo<T>*& rotacion_izq(Nodo<T>* raiz) {
 		Nodo* aux = raiz->getD();
 		raiz->setD(aux->getI());
 		aux->setI(raiz);
@@ -76,7 +77,7 @@ private:
 		return aux;
 	}
 
-	Nodo*& rotacion_der(Nodo* raiz) {
+	Nodo<T>*& rotacion_der(Nodo* raiz) {
 		Nodo* aux = raiz->getI();
 		raiz->setI(aux->getD());
 		aux->setD(raiz);
@@ -85,7 +86,7 @@ private:
 		return aux;
 	}
 
-	vector<Fila*>* _buscar(Nodo* raiz, int valor) {
+	vector<Fila*>* _buscar(Nodo<T>* raiz, int valor) {
 		if (raiz == nullptr) return nullptr;
 		else if (valor == raiz->getV()) return raiz->getE();
 		else if (raiz->getV() < valor) return _buscar(raiz->getI(), valor);
@@ -94,7 +95,7 @@ private:
 
 public:
 	Arbol() { inicio = nullptr; }
-	void insertar(int valor, Fila* nuevo, size_t ind) {
+	void insertar(T valor, Fila* nuevo, size_t ind) {
 		_insertar(inicio, valor, nuevo, ind);
 	}
 

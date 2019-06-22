@@ -2,16 +2,17 @@
 #define __NODO_ARBOL_HPP__
 #include "Dataframe.hpp"
 
+template<typename T>
 class Nodo {
 private:
-	int valor;
+	T valor;
 	Nodo* izq;
 	Nodo* der;
 	vector<Fila*>* filas;
 	int altura;
 
 public:
-	Nodo(int valor) {
+	Nodo(T valor) {
 		this->valor = valor;
 		izq = nullptr;
 		der = nullptr;
@@ -19,12 +20,12 @@ public:
 		filas = new vector<Fila*>;
 	}
 
-	int getV() { return valor; }
+	T getV() { return valor; }
 	Nodo*& getI() { return izq; }
 	Nodo*& getD() { return der; }
 	int getA() { return altura; }
 
-	void setV(int valor) { this->valor = valor; }
+	void setV(T valor) { this->valor = valor; }
 	void setI(Nodo* izq) { this->izq = izq; }
 	void setD(Nodo* der) { this->der = der; }
 	void setA(int altura) { this->altura = altura; }
