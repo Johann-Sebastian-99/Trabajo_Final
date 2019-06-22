@@ -129,6 +129,7 @@
     <ClInclude Include="Ejecucion.hpp" />
     <ClInclude Include="Fila.hpp" />
     <ClInclude Include="HashTable.h" />
+    <ClInclude Include="Indexacion.hpp" />
     <ClInclude Include="Lista.hpp" />
     <ClInclude Include="NodoHT.hpp" />
     <ClInclude Include="Nodo_Arbol.hpp" />
