@@ -74,12 +74,15 @@ public:
 		{
 		case 1:
 			nombre += ".txt";
+			separador = ',';
 			break;
 		case 2:
 			nombre += ".csv";
+			separador = ';';
 			break;
 		case 3:
 			nombre += ".tsv";
+			separador = '\t';
 			break;
 		}
 		pair<string, char> r(nombre, separador);
@@ -100,9 +103,7 @@ public:
 		cout << "Cual columna desea ordenar?" << endl;
 	}
 
-	int OpcionesDataframe(DataFrame* matriz){
-		cout << "Las opciones estan al final" << endl << endl;
-		matriz->mostrar();
+	int OpcionesDataframe(){
 		string opcion;
 		do {
 			cout << "1.- Agregar fila" << endl;

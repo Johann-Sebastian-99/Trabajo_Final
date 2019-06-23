@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string.h>
 #include <sstream>
+#include <iomanip>
 using namespace std;
 
 class DataFrame {
@@ -32,6 +33,10 @@ public:
 		datos = new vector<char>;
 		indexar = new Indexacion();
 		numFilas = 0;
+	}
+
+	int cantidad_filas() {
+		return numFilas;
 	}
 
 	void agregar_fila(Fila* nuevo) {
@@ -97,9 +102,13 @@ public:
 	void cargarMatriz(string nombre, char separador) {
 		ifstream archivo;
 		archivo.open(nombre);
+		if (archivo.fail()) {
+			cout << "No se pudo encontrar el archivo . . . ";
+			system("pause>0");
+			return;
+		}
 		string linea;
 		while (getline(archivo, linea)) {
-			if (numFilas == 0) tipos(linea);
 			stringstream temp(linea);
 			string dato;
 			agregar_fila(new Fila());
@@ -177,19 +186,20 @@ public:
 				switch (datos->at(j))
 				{
 				case 'I':
-					cout << filas->at(i)->getI(in) << "    ";
+					
+					cout << filas->at(i)->getI(in) << setw(10);
 					in++;
 					break;
 				case 'C':
-					cout << filas->at(i)->getC(c) << "    ";
+					cout << filas->at(i)->getC(c) << setw(10);
 					c++;
 					break;
 				case 'F':
-					cout << filas->at(i)->getF(f) << "    ";
+					cout << filas->at(i)->getF(f) << setw(10);
 					f++;
 					break;
 				case 'S':
-					cout << filas->at(i)->getS(s) << "    ";
+					cout << filas->at(i)->getS(s) << setw(10);
 					s++;
 					break;
 				}

@@ -2,6 +2,7 @@
 #define __HASHTABLE_HPP__
 #define TAMAÑO 100
 #include "Lista.hpp"
+#include <list>
 #include <vector>
 #include <array>
 using namespace std;
@@ -12,6 +13,9 @@ class HashTable {
 
 public:
 	HashTable() {
+		for (size_t i = 0; i < TAMAÑO; i++) {
+			tabla[i] = nullptr;
+		}
 	}
 
 	int funcionHash(string valor) {
@@ -24,7 +28,7 @@ public:
 
 	void insertar(Fila* nuevo, int ind) {
 		int hash = funcionHash(nuevo->getS(ind));
-		if (tabla[hash] == NULL) {
+		if (tabla[hash] == nullptr) {
 			tabla[hash] = new Lista();
 		}
 		tabla[hash]->agregar(nuevo, ind);
