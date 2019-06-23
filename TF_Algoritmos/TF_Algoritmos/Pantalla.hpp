@@ -1,27 +1,89 @@
 #ifndef __PANTALLA_HPP__
+#define __PANTALLA_HPP__
+#include "Dataframe.hpp"
 #include <iostream>
+#include <string>
+#include <vector>
 using namespace std;
 
 class Pantalla {
+private:
+	char identificarTD(string dato) {
+		int contP = 0;
+		for (size_t i = 0; i < dato.size(); i++) {
+			if (dato.at(i) > 57 || dato.at(i) < 48) {
+				if (dato.size() == 1) return 'C';
+				else if (dato.at(i) == 46 && contP < 1) contP++;
+				else return 'S';
+			}
+		}
+		if (contP > 0) return 'F';
+		else return 'I';
+	}
 public:
 	Pantalla() {
 
 	}
 
-	void MenuInicio() {
-		cout << "1.- Crear Nuevo Dataframe" << endl;
-		cout << "2.- Cargar Dataframe Existente" << endl;
-		cout << "3.- Salir del Programa" << endl;
+	int MenuInicio() {
+		string opcion;
+		do {
+			system("cls");
+			cout << "1.- Crear Nuevo Dataframe" << endl;
+			cout << "2.- Cargar Dataframe Existente" << endl;
+			cout << "3.- Salir del Programa" << endl;
+			cout << "Elija la opcion que desee ejecutar: ";
+			getline(cin, opcion);
+		} while ((identificarTD(opcion) != 'I'));
+		return stoi(opcion);
 	}
 
-	void MenuArchivo() {
-		cout << "1.- Archivo .txt" << endl;
-		cout << "2.- Archivo .csv" << endl;
-		cout << "3.- Otro" << endl;
+	vector<char>* CreacionDataframe() {
+		vector<char>* columnas = new vector<char>;
+		string cant;
+		string dato;
+		cout << "Elija la cantidad de columnas que desea agregar: ";
+		getline(cin, cant);
+		for (size_t i = 0; i < stoi(cant); i++) {
+			do {
+				cout << "Elija el tipo de dato " << i + 1 << "(I: Entero, F: Real, C: Caracter, S: Cadena de caracteres): ";
+				getline(cin, dato);
+			} while ((identificarTD(dato) != 'C'));
+			columnas->push_back(dato.at(0));
+		}
+		return columnas;
+	}
 
-		cout << "Escriba el formato del archivo: " << endl;
-
-		cout << "Escriba el nombre del archivo: " << endl;
+	pair<string, char> MenuArchivo() {
+		string nombre;
+		string opcion;
+		char separador;
+		system("cls");
+		cout << "Escriba el nombre del archivo(sin formato): ";
+		getline(cin, nombre);
+		cout << endl;
+		do {
+			system("cls");
+			cout << "1.- Archivo .txt" << endl;
+			cout << "2.- Archivo .csv" << endl;
+			cout << "3.- Otro" << endl;
+			cout << "Elija la opcion: ";
+			getline(cin, opcion);
+		} while (identificarTD(opcion) != 'I');
+		switch (stoi(opcion))
+		{
+		case 1:
+			nombre += ".txt";
+			break;
+		case 2:
+			nombre += ".csv";
+			break;
+		case 3:
+			nombre += ".tsv";
+			break;
+		}
+		pair<string, char> r(nombre, separador);
+		return r;
 	}
 
 	void Filtrado() {
@@ -38,13 +100,21 @@ public:
 		cout << "Cual columna desea ordenar?" << endl;
 	}
 
-	void OpcionesDataframe(){
-		cout << "1.- Agregar fila" << endl;
-		cout << "2.- Eliminar fila" << endl;
-		cout << "3.- Ordenar por columnas" << endl;
-		cout << "4.- Seleccionar columnas" << endl;
-		cout << "5.- Filtrar por columnas" << endl;
-		cout << "6.- Guardar Dataframe" << endl;
+	int OpcionesDataframe(DataFrame* matriz){
+		cout << "Las opciones estan al final" << endl << endl;
+		matriz->mostrar();
+		string opcion;
+		do {
+			cout << "1.- Agregar fila" << endl;
+			cout << "2.- Ordenar por columnas" << endl;
+			cout << "3.- Seleccionar columnas" << endl;
+			cout << "4.- Filtrar por columnas" << endl;
+			cout << "5.- Guardar Dataframe" << endl;
+			cout << "6.- Salir" << endl;
+			cout << "Elija la opcion que desea ejecutar: ";
+			getline(cin, opcion);
+		} while (identificarTD(opcion) != 'I');
+		return stoi(opcion);
 	}
 
 };

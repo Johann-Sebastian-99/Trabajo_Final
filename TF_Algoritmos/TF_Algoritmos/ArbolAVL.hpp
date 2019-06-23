@@ -5,6 +5,16 @@
 
 template<typename T>
 class Arbol {
+public:
+	Arbol() { inicio = nullptr; }
+	void insertar(T valor, Fila* nuevo) {
+		_insertar(inicio, valor, nuevo);
+	}
+
+	vector<Fila*>* buscar(int valor) {
+		_buscar(inicio, valor);
+	}
+
 private:
 	Nodo<T>* inicio;
 
@@ -16,29 +26,30 @@ private:
 		else return der;
 	}
 
-	void _insertar(Nodo<T>*& raiz, T valor, Fila* nuevo, size_t ind) {
+	void _insertar(Nodo<T>*& raiz, T valor, Fila* nuevo) {
 		if (raiz == nullptr) {
-			raiz = new Nodo(valor);
+			raiz = new Nodo<T>(valor);
+			raiz->setE(nuevo);
 			return;
 		}
-		else if (raiz->getV() == valor) {
+		else if (valor == raiz->getV()) {
 			raiz->setE(nuevo);
 			return;
 		}
 		else {
 			int izq = 0, der = 0;
 			if (raiz->getV() < valor) {
-				_insertar(raiz->getI(), valor, nuevo, ind);
+				_insertar(raiz->getI(), valor, nuevo);
 			}
 			else {
-				_insertar(raiz->getD(), valor, nuevo, ind);
+				_insertar(raiz->getD(), valor, nuevo);
 			}
+			balanceo(raiz);
+			raiz->setA(calcular_altura(raiz));
 		}
-		balanceo(raiz);
-		raiz->setA(calcular_altura(raiz));
 	}
 
-	int factor_equilibrio(Nodo<T>* izq, Nodo* der) {
+	int factor_equilibrio(Nodo<T>* izq, Nodo<T>* der) {
 		if (!izq && !der) return 0;
 		if (!izq && der) return der->getA() + 1;
 		if (izq && !der) return (izq->getA() + 1)*(-1);
@@ -46,30 +57,22 @@ private:
 	}
 
 	void balanceo(Nodo<T>*& raiz) {
-		Nodo* izq = raiz->getI();
-		Nodo* der = raiz->getD();
+		Nodo<T>* izq = raiz->getI();
+		Nodo<T>* der = raiz->getD();
 		if (factor_equilibrio(izq, der) > 1) {
-			if (factor_equilibrio(der->getI(), der->getD()) < 0) {
+			if (factor_equilibrio(der->getI(), der->getD()) < 0) 
 				raiz->getD() = rotacion_der(der);
-				raiz = rotacion_izq(raiz);
-			}
-			else {
-				raiz = rotacion_izq(raiz);
-			}
+			raiz = rotacion_izq(raiz);
 		}
 		if (factor_equilibrio(izq, der) < -1) {
-			if (factor_equilibrio(izq->getI(), izq->getD()) > 0) {
+			if (factor_equilibrio(izq->getI(), izq->getD()) > 0) 
 				raiz->getI() = rotacion_izq(izq);
-				raiz = rotacion_der(raiz);
-			}
-			else {
-				raiz = rotacion_der(raiz);
-			}
+			raiz = rotacion_der(raiz);
 		}
 	}
 
 	Nodo<T>*& rotacion_izq(Nodo<T>* raiz) {
-		Nodo* aux = raiz->getD();
+		Nodo<T>* aux = raiz->getD();
 		raiz->setD(aux->getI());
 		aux->setI(raiz);
 		aux->setA(calcular_altura(aux));
@@ -77,8 +80,8 @@ private:
 		return aux;
 	}
 
-	Nodo<T>*& rotacion_der(Nodo* raiz) {
-		Nodo* aux = raiz->getI();
+	Nodo<T>*& rotacion_der(Nodo<T>* raiz) {
+		Nodo<T>* aux = raiz->getI();
 		raiz->setI(aux->getD());
 		aux->setD(raiz);
 		aux->setA(calcular_altura(aux));
@@ -91,16 +94,6 @@ private:
 		else if (valor == raiz->getV()) return raiz->getE();
 		else if (raiz->getV() < valor) return _buscar(raiz->getI(), valor);
 		else return _buscar(raiz->getD(), valor);
-	}
-
-public:
-	Arbol() { inicio = nullptr; }
-	void insertar(T valor, Fila* nuevo, size_t ind) {
-		_insertar(inicio, valor, nuevo, ind);
-	}
-
-	vector<Fila*>* buscar(int valor) {
-		_buscar(inicio, valor);
 	}
 };
 

@@ -12,7 +12,6 @@ class HashTable {
 
 public:
 	HashTable() {
-		listas = new Lista();
 	}
 
 	int funcionHash(string valor) {

@@ -12,7 +12,6 @@ private:
 	vector<char>* caracteres;
 	vector<float>* flotantes;
 	vector<string>* cadenas;
-	vector<bool>* booleanos;
 
 public:
 	Fila() {
@@ -20,7 +19,6 @@ public:
 		caracteres = nullptr;
 		flotantes = nullptr;
 		cadenas = nullptr;
-		booleanos = nullptr;
 	}
 
 	void insertar(int valor) {
@@ -39,10 +37,6 @@ public:
 		if (!cadenas) cadenas = new vector<string>;
 		cadenas->push_back(valor);
 	}
-	void insertar(bool valor) {
-		if (!booleanos) booleanos = new vector<bool>;
-		booleanos->push_back(valor);
-	}
 
 	int getI(size_t in) {
 		return enteros->at(in);
@@ -55,9 +49,6 @@ public:
 	}
 	string getS(size_t in) {
 		return cadenas->at(in);
-	}
-	bool getB(size_t in) {
-		return booleanos->at(in);
 	}
 };
 

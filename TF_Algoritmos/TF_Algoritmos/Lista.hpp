@@ -5,27 +5,31 @@
 using namespace std;
 
 class Lista {
-	NodoHT* inicio;
+public:
+	NodoHT* ini;
 	NodoHT* fin;
 
-public:
 	Lista(){
-		inicio = fin = nullptr;
+		ini = nullptr;
+		fin = nullptr;
 	}
 
 	void agregar(Fila* elemento, int ind) {
-		NodoHT* nuevo = new NodoHT(elemento, ind);
-		if (inicio == nullptr) inicio = nuevo;
-		else if (inicio == fin) {
-			fin->setS(nuevo);
+		if (ini == nullptr) {
+			ini = new NodoHT(elemento, ind);
+			fin = ini;
 		}
-		fin = nuevo;
+		else if (ini == fin) {
+			NodoHT* nuevo = new NodoHT(elemento, ind);
+			fin->setS(nuevo);
+			fin = nuevo;
+		}
 	}
 
 	vector<Fila*>* buscar(string valor) {
 		vector<Fila*>* filas = new vector<Fila*>;
 		NodoHT* aux;
-		for (aux = inicio; aux->getS(); aux = aux->getS()) {
+		for (aux = ini; aux->getS(); aux = aux->getS()) {
 			if (valor == aux->getV()) {
 				filas->push_back(aux->getElemento());
 			}
