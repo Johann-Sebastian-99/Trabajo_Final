@@ -6,12 +6,13 @@
 #include <string.h>
 #include <sstream>
 #include <iomanip>
+#include "Ordenamiento.hpp"
 using namespace std;
 
 class DataFrame {
 private:
 	vector<Fila*>* filas;
-	vector<char>* datos;
+	vector<pair<char, string>*>* datos;
 	size_t numFilas;
 	Indexacion* indexar;
 	char identificarTD(string dato) {
@@ -30,9 +31,14 @@ private:
 public:
 	DataFrame() {
 		filas = new vector<Fila*>;
-		datos = new vector<char>;
+		datos = new vector<pair<char, string>*>;
 		indexar = new Indexacion();
 		numFilas = 0;
+	}
+
+	DataFrame(vector<Fila*>* filas, vector<pair<char, string>*>* datos) {
+		this->filas = filas;
+		this->datos = datos;
 	}
 
 	int cantidad_filas() {
@@ -48,7 +54,7 @@ public:
 		filas->push_back(new Fila());
 		for (size_t i = 0; i < datos->size(); i++) {
 			size_t in = 0, c = 0, f = 0, s = 0;
-			switch (datos->at(i))
+			switch (datos->at(i)->first)
 			{
 			case 'I':
 				cout << "Inserte valor de columna " << i + 1 << ": ";
@@ -83,21 +89,25 @@ public:
 		numFilas++;
 	}
 
-	void definir_columnas(vector<char>* columnas) {
+	void definir_columnas(vector<pair<char, string>*>* columnas) {
 		datos = columnas;
 		for (size_t i = 0; i < datos->size(); i++) {
-			indexar->agregar(datos->at(i));
+			indexar->agregar(datos->at(i)->first);
 		}
 	}
 
-	void tipos(string linea) {
+	vector<pair<char, string>*>* getColumnas() {
+		return datos;
+	}
+
+	/*void tipos(string linea) {
 		stringstream temp(linea);
 		string dato;
 		while (getline(temp, dato, ',')) {
 			datos->push_back(identificarTD(dato));
 			indexar->agregar(identificarTD(dato));
 		}
-	}
+	}*/
 
 	void cargarMatriz(string nombre, char separador) {
 		ifstream archivo;
@@ -112,9 +122,9 @@ public:
 			stringstream temp(linea);
 			string dato;
 			agregar_fila(new Fila());
+			size_t in = 0, c = 0, f = 0, s = 0;
 			for (size_t i = 0; i < datos->size(); i++) {
-				size_t in = 0, c = 0, f = 0, s = 0;
-				switch (datos->at(i))
+				switch (datos->at(i)->first)
 				{
 				case 'I':
 					getline(temp, dato, separador);
@@ -147,13 +157,13 @@ public:
 		archivo.close();
 	}
 
-	void guardarMatriz(string nombre) { //Exportar
+	void guardarMatriz(string nombre, char separador) { //Exportar
 		ofstream archivo;
 		archivo.open(nombre + ".txt");
 		for (size_t i = 0; i < filas->size(); i++) {
+			size_t in = 0, c = 0, f = 0, s = 0;
 			for (size_t j = 0; j < datos->size(); j++) {
-				size_t in = 0, c = 0, f = 0, s = 0;
-				switch (datos->at(j))
+				switch (datos->at(j)->first)
 				{
 				case 'I':
 					archivo << filas->at(i)->getI(in);
@@ -172,21 +182,59 @@ public:
 					s++;
 					break;
 				}
-				if (j < datos->size() - 1) archivo << ",";
+				if (j < datos->size() - 1) archivo << separador;
 			}
 			archivo << endl;
 		}
 		archivo.close();
 	}
 
+	pair<size_t, char>* buscar_columna(string columna) {
+		size_t in = 0, f = 0, c = 0, s = 0;
+		for (size_t i = 0; i < datos->size(); i++) {
+			switch (datos->at(i)->first)
+			{
+			case 'I':
+				if (datos->at(i)->second == columna)
+					return new pair<size_t, char>(in, datos->at(i)->first);
+				in++;
+				break;
+			case 'F':
+				if (datos->at(i)->second == columna)
+					return new pair<size_t, char>(f, datos->at(i)->first);
+				f++;
+				break;
+			case 'C':
+				if (datos->at(i)->second == columna)
+					return new pair<size_t, char>(c, datos->at(i)->first);
+				c++;
+				break;
+			case 'S':
+				if (datos->at(i)->second == columna)
+					return new pair<size_t, char>(s, datos->at(i)->first);
+				s++;
+				break;
+			}
+		}
+	}
+
+	template<typename T>
+	vector<Fila*>* funcion_filtrar(string columna, T valor) {
+		pair<size_t, char>* valores = buscar_columna(columna);
+		return indexar->buscar(valores->first, valor);
+	}
+
 	void mostrar() {
+		for (int i = 0; i < datos->size(); i++) {
+			cout << datos->at(i)->second << "	";
+		}
+		cout << endl;
 		for (size_t i = 0; i < filas->size(); i++) {
 			size_t in = 0, c = 0, f = 0, s = 0, b = 0;
 			for (size_t j = 0; j < datos->size(); j++) {
-				switch (datos->at(j))
+				switch (datos->at(j)->first)
 				{
 				case 'I':
-					
 					cout << filas->at(i)->getI(in) << setw(10);
 					in++;
 					break;
@@ -207,5 +255,16 @@ public:
 			cout << endl;
 		}
 	}
+
+	void ordenar_columna(string columna) {
+		pair<size_t, char>* ord = buscar_columna(columna);
+		Ordenamiento* o = new Ordenamiento(filas, ord->first);
+		if (ord->second == 'S') o->cadenas();
+		else o->quicksort(ord->second);
+		filas = o->ordenado();
+		delete[] o;
+		o = nullptr;
+	}
+
 };
 #endif // !__DATAFRAME_HPP__

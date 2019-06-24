@@ -60,15 +60,19 @@ public:
 						matriz->valores_fila();
 						break;
 					case 2:
+						system("cls");
+						pantallas->Ordenar(matriz);
 						break;
 					case 3:
+						system("cls");
 						break;
 					case 4:
+						system("cls");
+						pantallas->Filtrado(matriz);
 						break;
 					case 5:
-						break;
-					case 6:
-						
+						archivo = pantallas->MenuArchivo();
+						matriz->guardarMatriz(archivo.first, archivo.second);
 						break;
 					}
 				} while (accion != 6);

@@ -12,7 +12,7 @@ public:
 	}
 
 	vector<Fila*>* buscar(int valor) {
-		_buscar(inicio, valor);
+		return _buscar(inicio, valor);
 	}
 
 private:

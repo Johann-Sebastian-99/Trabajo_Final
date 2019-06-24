@@ -63,9 +63,9 @@ public:
 	vector<Fila*>* buscar(size_t ind, char valor) {
 		return caracteres->at(ind)->buscar(valor);
 	}
-//	vector<Fila*>* buscar(size_t ind, string valor) {
-	//	return cadenas->at(ind)->buscar(valor);
-	//}
+	vector<Fila*>* buscar(size_t ind, string valor) {
+		return cadenas->at(ind)->buscar(valor);
+	}
 };
 
 #endif // !__INDEXACION_HPP__

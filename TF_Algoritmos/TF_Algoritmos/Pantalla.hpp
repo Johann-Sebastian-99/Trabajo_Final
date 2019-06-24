@@ -38,20 +38,28 @@ public:
 		return stoi(opcion);
 	}
 
-	vector<char>* CreacionDataframe() {
-		vector<char>* columnas = new vector<char>;
+	vector<pair<char, string>*>* CreacionDataframe() {
+		vector<pair<char, string>*>* columnas = new vector<pair<char, string>*>;
 		string cant;
 		string dato;
+		string nombre;
 		cout << "Elija la cantidad de columnas que desea agregar: ";
 		getline(cin, cant);
 		for (size_t i = 0; i < stoi(cant); i++) {
 			do {
 				cout << "Elija el tipo de dato " << i + 1 << "(I: Entero, F: Real, C: Caracter, S: Cadena de caracteres): ";
 				getline(cin, dato);
+				cout << "Digite el nombre de la columna: ";
+				getline(cin, nombre);
 			} while ((identificarTD(dato) != 'C'));
-			columnas->push_back(dato.at(0));
+			columnas->push_back(new pair<char, string>(dato.at(0), nombre));
 		}
 		return columnas;
+	}
+
+	void seleccionado(DataFrame* matriz) {
+		
+
 	}
 
 	pair<string, char> MenuArchivo() {
@@ -89,18 +97,94 @@ public:
 		return r;
 	}
 
-	void Filtrado() {
-		cout << "Elija la columna(numero de columna): " << endl;
-		
-		cout << "Escriba el dato que desea filtrar: " << endl;
+	void Filtrado(DataFrame* matriz) {
+		string respuesta;
+		string dato;
+		vector<Fila*>* filas;
+		pair<string, string> columnas;
+		DataFrame* aux;
+		cout << "Elija la columna(numero de columna): ";
+		getline(cin, columnas.first);
+		cout << "Digite el dato que desea filtrar: ";
+		getline(cin, dato);
+		switch (identificarTD(dato))
+		{
+		case 'I':
+			filas = matriz->funcion_filtrar(columnas.first, stoi(dato));
+			break;
+		case 'F':
+			filas = matriz->funcion_filtrar(columnas.first, stof(dato));
+			break;
+		case 'C':
+			filas = matriz->funcion_filtrar(columnas.first, dato.at(0));
+			break;
+		case 'S':
+			filas = matriz->funcion_filtrar(columnas.first, dato);
+			break;
+		}
+		aux = new DataFrame(filas, matriz->getColumnas());
+		cout << "Desea filtrar otra columna?";
+		getline(cin, respuesta);
+		if (toupper(respuesta.at(0)) == 'S') {
+			cout << "Elija la columna(numero de columna): ";
+			getline(cin, columnas.first);
+			cout << "Digite el dato que desea filtrar: ";
+			getline(cin, dato);
+			switch (identificarTD(dato))
+			{
+			case 'I':
+				filas = aux->funcion_filtrar(columnas.first, stoi(dato));
+				break;
+			case 'F':
+				filas = aux->funcion_filtrar(columnas.first, stoi(dato));
+				break;
+			case 'C':
+				filas = aux->funcion_filtrar(columnas.first, stoi(dato));
+				break;
+			case 'S':
+				filas = aux->funcion_filtrar(columnas.first, stoi(dato));
+				break;
+			}
+			aux = new DataFrame(filas, matriz->getColumnas());
+		}
+		aux->mostrar();
+		cout << "Si desea guardar esta matriz, digite G; sino, digite cualquier otra tecla: ";
+		getline(cin, respuesta);
+		if (toupper(respuesta.at(0)) == 'G') {
+			pair<string, char> r = MenuArchivo();
+			aux->guardarMatriz(r.first, r.second);
+		}
+		system("cls");
+		aux->mostrar();
+		cout << "Guardado exitosamente, puse cualquier tecla para continuar . . .";
+		delete[] aux;
+		aux = nullptr;
+		system("pause>0");
 	}
 
 	void Seleccion() {
 		cout << "Elija la columna(numero de columna): " << endl;
 	}
 
-	void Ordenar() {
-		cout << "Cual columna desea ordenar?" << endl;
+	void Ordenar(DataFrame* matriz) {
+		string columna;
+		string respuesta;
+		system("cls");
+		cout << "Cual columna desea ordenar?";
+		getline(cin, columna);
+		system("cls");
+		matriz->ordenar_columna(columna);
+		matriz->mostrar();
+		cout << "Si desea guardar esta matriz, digite G; sino, digite cualquier otra tecla: ";
+		getline(cin, respuesta);
+		if (toupper(respuesta.at(0)) == 'G') {
+			pair<string, char> r = MenuArchivo();
+			matriz->guardarMatriz(r.first, r.second);
+		}
+		system("cls");
+		matriz->mostrar();
+		cout << "Guardado exitosamente, puse cualquier tecla para continuar . . .";
+		system("pause>0");
 	}
 
 	int OpcionesDataframe(){
