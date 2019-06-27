@@ -6,7 +6,6 @@
 #include <string.h>
 #include <sstream>
 #include <iomanip>
-#include "Ordenamiento.hpp"
 using namespace std;
 
 class DataFrame {

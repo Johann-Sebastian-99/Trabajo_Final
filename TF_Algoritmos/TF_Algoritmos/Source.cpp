@@ -73,4 +73,5 @@ int main() {
 			} while (accion != 6);
 		}
 	} while (opcion != 3);
+	return 0;
 }

@@ -227,7 +227,6 @@ public:
 		getline(cin, columna);
 		system("cls");
 		matriz->ordenar_columna(columna);
-		matriz->mostrar();
 	}
 
 	int OpcionesDataframe(){
