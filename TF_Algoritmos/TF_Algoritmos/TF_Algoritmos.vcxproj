@@ -126,14 +126,12 @@
   <ItemGroup>
     <ClInclude Include="ArbolAVL.hpp" />
     <ClInclude Include="Dataframe.hpp" />
-    <ClInclude Include="Ejecucion.hpp" />
     <ClInclude Include="Fila.hpp" />
     <ClInclude Include="HashTable.hpp" />
     <ClInclude Include="Indexacion.hpp" />
     <ClInclude Include="Lista.hpp" />
     <ClInclude Include="NodoHT.hpp" />
     <ClInclude Include="Nodo_Arbol.hpp" />
-    <ClInclude Include="Ordenamiento.hpp" />
     <ClInclude Include="Pantalla.hpp" />
   </ItemGroup>
   <ItemGroup>

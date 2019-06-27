@@ -43,23 +43,81 @@ public:
 		string cant;
 		string dato;
 		string nombre;
-		cout << "Elija la cantidad de columnas que desea agregar: ";
-		getline(cin, cant);
+		do {
+			cout << "Elija la cantidad de columnas que desea agregar: ";
+			getline(cin, cant);
+		} while (identificarTD(cant) != 'I');
 		for (size_t i = 0; i < stoi(cant); i++) {
 			do {
 				cout << "Elija el tipo de dato " << i + 1 << "(I: Entero, F: Real, C: Caracter, S: Cadena de caracteres): ";
 				getline(cin, dato);
+			} while (identificarTD(dato) != 'C');
+			do{
 				cout << "Digite el nombre de la columna: ";
 				getline(cin, nombre);
-			} while ((identificarTD(dato) != 'C'));
+			} while (identificarTD(nombre) != 'S');
 			columnas->push_back(new pair<char, string>(dato.at(0), nombre));
 		}
 		return columnas;
 	}
 
 	void seleccionado(DataFrame* matriz) {
-		
-
+		string cantidad;
+		string nombre;
+		string respuesta;
+		vector<pair<size_t, char>*>* columnas = new vector<pair<size_t, char>*>;
+		vector<pair<char, string>*>* datos = new vector<pair<char, string>*>;
+		vector<Fila*>* filas = new vector<Fila*>;
+		pair<size_t, char>* identificador = new pair<size_t, char>(0, 'N');
+		do {
+			system("cls");
+			do {
+				system("cls");
+				cout << "Elija la cantidad de columnas que desea seleccionar: ";
+				getline(cin, cantidad);
+			} while (identificarTD(cantidad) != 'I');
+		} while (stoi(cantidad) >= matriz->cantidad_columnas());
+		for (size_t i = 0; i < stoi(cantidad); i++) {
+			do {
+				cout << "Digite la columna que desea seleccionar: ";
+				getline(cin, nombre);
+			} while (matriz->buscar_columna(nombre) == identificador);
+			columnas->push_back(matriz->buscar_columna(nombre));
+			datos->push_back(new pair<char, string>(columnas->at(i)->second, nombre));
+		}
+		for (size_t i = 0; i < matriz->cantidad_filas(); i++) {
+			filas->push_back(new Fila());
+			for (size_t j = 0; j < stoi(cantidad); j++) {
+				switch (columnas->at(j)->second)
+				{
+				case 'I':
+					filas->at(i)->insertar(matriz->getI_Fila(i, columnas->at(j)->first));
+					break;
+				case 'F':
+					filas->at(i)->insertar(matriz->getF_Fila(i, columnas->at(j)->first));
+					break;
+				case 'C':
+					filas->at(i)->insertar(matriz->getC_Fila(i, columnas->at(j)->first));
+					break;
+				case 'S':
+					filas->at(i)->insertar(matriz->getS_Fila(i, columnas->at(j)->first));
+					break;
+				}
+			}
+		}
+		DataFrame* aux = new DataFrame(filas, datos);
+		aux->mostrar(); 
+		cout << "Si desea guardar esta matriz, digite G; sino, digite cualquier otra tecla: ";
+		getline(cin, respuesta);
+		if (toupper(respuesta.at(0)) == 'G') {
+			pair<string, char> r = MenuArchivo();
+			aux->guardarMatriz(r.first, r.second);
+			system("cls");
+			cout << "Guardado exitosamente, puse cualquier tecla para continuar . . .";
+			system("pause>0");
+		}
+		delete[] aux;
+		aux = nullptr;
 	}
 
 	pair<string, char> MenuArchivo() {
@@ -103,7 +161,7 @@ public:
 		vector<Fila*>* filas;
 		pair<string, string> columnas;
 		DataFrame* aux;
-		cout << "Elija la columna(numero de columna): ";
+		cout << "Elija la columna(nombre de columna): ";
 		getline(cin, columnas.first);
 		cout << "Digite el dato que desea filtrar: ";
 		getline(cin, dato);
@@ -153,17 +211,12 @@ public:
 		if (toupper(respuesta.at(0)) == 'G') {
 			pair<string, char> r = MenuArchivo();
 			aux->guardarMatriz(r.first, r.second);
+			system("cls");
+			cout << "Guardado exitosamente, puse cualquier tecla para continuar . . .";
+			system("pause>0");
 		}
-		system("cls");
-		aux->mostrar();
-		cout << "Guardado exitosamente, puse cualquier tecla para continuar . . .";
 		delete[] aux;
 		aux = nullptr;
-		system("pause>0");
-	}
-
-	void Seleccion() {
-		cout << "Elija la columna(numero de columna): " << endl;
 	}
 
 	void Ordenar(DataFrame* matriz) {
@@ -175,16 +228,6 @@ public:
 		system("cls");
 		matriz->ordenar_columna(columna);
 		matriz->mostrar();
-		cout << "Si desea guardar esta matriz, digite G; sino, digite cualquier otra tecla: ";
-		getline(cin, respuesta);
-		if (toupper(respuesta.at(0)) == 'G') {
-			pair<string, char> r = MenuArchivo();
-			matriz->guardarMatriz(r.first, r.second);
-		}
-		system("cls");
-		matriz->mostrar();
-		cout << "Guardado exitosamente, puse cualquier tecla para continuar . . .";
-		system("pause>0");
 	}
 
 	int OpcionesDataframe(){

@@ -11,8 +11,8 @@ class NodoHT {
 	NodoHT* sig;
 
 public:
-	NodoHT(Fila* elemento, int ind) {
-		valor = elemento->getS(ind);
+	NodoHT(Fila* elemento, string valor) {
+		this->valor = valor;
 		this->elemento = elemento;
 		sig = nullptr;
 	}

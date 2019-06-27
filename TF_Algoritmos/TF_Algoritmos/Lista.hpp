@@ -14,13 +14,13 @@ public:
 		fin = nullptr;
 	}
 
-	void agregar(Fila* elemento, int ind) {
+	void agregar(Fila* elemento, string valor) {
 		if (ini == nullptr) {
-			ini = new NodoHT(elemento, ind);
+			ini = new NodoHT(elemento, valor);
 			fin = ini;
 		}
 		else if (ini == fin) {
-			NodoHT* nuevo = new NodoHT(elemento, ind);
+			NodoHT* nuevo = new NodoHT(elemento, valor);
 			fin->setS(nuevo);
 			fin = nuevo;
 		}
@@ -29,7 +29,7 @@ public:
 	vector<Fila*>* buscar(string valor) {
 		vector<Fila*>* filas = new vector<Fila*>;
 		NodoHT* aux;
-		for (aux = ini; aux->getS(); aux = aux->getS()) {
+		for (aux = ini; aux->getS() != nullptr; aux = aux->getS()) {
 			if (valor == aux->getV()) {
 				filas->push_back(aux->getElemento());
 			}

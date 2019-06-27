@@ -17,6 +17,7 @@ private:
 	Indexacion* indexar;
 	char identificarTD(string dato) {
 		int contP = 0;
+		if (dato.at(dato.size() - 1) == '\n') dato.erase(dato.size() - 1);
 		for (size_t i = 0; i < dato.size(); i++) {
 			if (dato.at(i) > 57 || dato.at(i) < 48) {
 				if (dato.size() == 1) return 'C';
@@ -43,6 +44,10 @@ public:
 
 	int cantidad_filas() {
 		return numFilas;
+	}
+
+	int cantidad_columnas() {
+		return datos->size();
 	}
 
 	void agregar_fila(Fila* nuevo) {
@@ -100,14 +105,52 @@ public:
 		return datos;
 	}
 
-	/*void tipos(string linea) {
+	int getI_Fila(size_t ind, size_t in) {
+		return filas->at(ind)->getI(in);
+	}
+
+	float getF_Fila(size_t ind, size_t f) {
+		return filas->at(ind)->getF(f);
+	}
+
+	char getC_Fila(size_t ind, size_t c) {
+		return filas->at(ind)->getC(c);
+	}
+
+	string getS_Fila(size_t ind, size_t s) {
+		return filas->at(ind)->getS(s);
+	}
+
+	void tipos(string linea, char separador) {
 		stringstream temp(linea);
 		string dato;
-		while (getline(temp, dato, ',')) {
-			datos->push_back(identificarTD(dato));
+		string nombre;
+		size_t in = 1, f = 1, c = 1, s = 1;
+		while (getline(temp, dato, separador)) {
+			switch (identificarTD(dato))
+			{
+			case 'I':
+				cout << "Digite el nombre de la " << in << "° columna numeros enteros: ";
+				in++;
+				break;
+			case 'F':
+				cout << "Digite el nombre de la " << f << "° columna de numeros reales: ";
+				f++;
+				break;
+			case 'C':
+				cout << "Digite el nombre de la " << c << "° columna de caracteres: ";
+				c++;
+				break;
+			case 'S':
+				cout << "Digite el nombre de la " << s << "° columna de cadenas de caracteres: ";
+				s++;
+				break;
+			}
+			getline(cin, nombre);
+			datos->push_back(new pair<char, string>(identificarTD(dato), nombre));
 			indexar->agregar(identificarTD(dato));
 		}
-	}*/
+	}
 
 	void cargarMatriz(string nombre, char separador) {
 		ifstream archivo;
@@ -119,6 +162,7 @@ public:
 		}
 		string linea;
 		while (getline(archivo, linea)) {
+			if (numFilas == 0) tipos(linea, separador);
 			stringstream temp(linea);
 			string dato;
 			agregar_fila(new Fila());
@@ -216,6 +260,8 @@ public:
 				break;
 			}
 		}
+		pair<size_t, char>* r = new pair<size_t, char>(0, 'N');
+		return r;
 	}
 
 	template<typename T>
@@ -258,12 +304,86 @@ public:
 
 	void ordenar_columna(string columna) {
 		pair<size_t, char>* ord = buscar_columna(columna);
-		Ordenamiento* o = new Ordenamiento(filas, ord->first);
-		if (ord->second == 'S') o->cadenas();
-		else o->quicksort(ord->second);
-		filas = o->ordenado();
-		delete[] o;
-		o = nullptr;
+		if (ord->second == 'S') cadenas(ord->first);
+		else quicksort(ord->second, ord->first);
+	}
+
+	void swap(vector<Fila*>*& filas, int ini, int fin) {
+		Fila* aux = filas->at(ini);
+		filas->at(ini) = filas->at(fin);
+		filas->at(fin) = aux;
+	}
+
+	void ordenando(vector<Fila*>* filas, int izq, int der, char tipo, size_t ind) {
+		int i = izq, j = der, tmp;
+		int p;
+		switch (tipo)
+		{
+		case 'I':
+			p = filas->at((izq + der) / 2)->getI(ind);
+			while (i <= j) {
+				while (filas->at(i)->getI(ind) < p) i++;
+				while (filas->at(j)->getI(ind) > p) j--;
+				if (i <= j) {
+					swap(filas, i, j);
+					i++, j--;
+				}
+			}
+			break;
+		case 'F':
+			p = filas->at((izq + der) / 2)->getF(ind);
+			while (i <= j) {
+				while (filas->at(i)->getF(ind) < p) i++;
+				while (filas->at(j)->getF(ind) > p) j--;
+				if (i <= j) {
+					swap(filas, i, j);
+					i++, j--;
+				}
+			}
+			break;
+		case 'C':
+			p = filas->at((izq + der) / 2)->getC(ind);
+			while (i <= j) {
+				while (filas->at(i)->getC(ind) < p) i++;
+				while (filas->at(j)->getC(ind) > p) j--;
+				if (i <= j) {
+					swap(filas, i, j);
+					i++, j--;
+				}
+			}
+			break;
+		}
+		if (izq < j)
+			ordenando(filas, izq, j, tipo, ind);
+		if (i < der)
+			ordenando(filas, i, der, tipo, ind);
+	}
+
+	void quicksort(char tipo, size_t ind) {
+		ordenando(filas, 0, filas->size() - 1, tipo, ind);
+	}
+
+	void quicksort(vector<Fila*>* filas, int izq, int der, int ind) {
+		int i = izq, j = der, tmp;
+		char p;
+		p = filas->at((izq + der) / 2)->getS(ind).at(0);
+		while (i <= j) {
+			while (filas->at(i)->getS(ind).at(0) < p) i++;
+			while (filas->at(j)->getS(ind).at(0) > p) j--;
+			if (i <= j) {
+				swap(filas, i, j);
+				i++, j--;
+			}
+		}
+		if (izq < j)
+			quicksort(filas, izq, j, ind);
+		if (i < der)
+			quicksort(filas, i, der, ind);
+	}
+
+
+	void cadenas(size_t ind) {
+		quicksort(filas, 0, filas->size() - 1, ind);
 	}
 
 };

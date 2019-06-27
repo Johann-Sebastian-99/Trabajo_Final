@@ -51,7 +51,7 @@ public:
 		caracteres->at(ind)->insertar(valor, nuevo);
 	}
 	void insertar(size_t ind, Fila* nuevo, string valor) {
-		cadenas->at(ind)->insertar(nuevo, ind);
+		cadenas->at(ind)->insertar(nuevo, valor);
 	}
 
 	vector<Fila*>* buscar(size_t ind, int valor) {

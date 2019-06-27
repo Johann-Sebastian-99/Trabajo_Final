@@ -20,18 +20,20 @@ public:
 
 	int funcionHash(string valor) {
 		int suma = 0;
+		int p;
 		for (size_t i = 0; i < valor.size(); i++) {
-			suma += valor.at(i);
+			p = valor.at(i);
+			suma = suma + p;
 		}
 		return suma % TAMAÑO;
 	}
 
-	void insertar(Fila* nuevo, int ind) {
-		int hash = funcionHash(nuevo->getS(ind));
+	void insertar(Fila* nuevo, string valor) {
+		int hash = funcionHash(valor);
 		if (tabla[hash] == nullptr) {
 			tabla[hash] = new Lista();
 		}
-		tabla[hash]->agregar(nuevo, ind);
+		tabla[hash]->agregar(nuevo, valor);
 	}
 
 	vector<Fila*>* buscar(string nombre) {
